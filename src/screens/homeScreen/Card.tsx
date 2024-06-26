@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from "react-native";
 import Typography from "../../components/Typography.tsx";
+import {Button} from "../../components/Button.tsx";
+import {useTransactions} from "../../contexts/TransactionContext.tsx";
 
 interface Props {
   balance: number;
@@ -11,6 +13,7 @@ const HIDE_NUMBER = "XXXX"
 
 export const Card = (props: Props) => {
   const { balance } = props;
+  const { topUp } = useTransactions();
   const draftSeriesNumbers: string[] | null = SERIES_NUMBER.match(/.{1,4}/g);
   const newSeriesNumber: (string | "-")[] = [];
   if (draftSeriesNumbers) {
@@ -29,7 +32,7 @@ export const Card = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerCard}>
+      <View style={[styles.headerCard, { justifyContent: 'space-between' }]}>
         <View style={styles.headerCard}>
           <View style={styles.dollarIcon}>
             <Typography style={styles.dollarText}>$</Typography>
@@ -39,6 +42,9 @@ export const Card = (props: Props) => {
             <Typography style={styles.description}>Current Balance</Typography>
           </View>
         </View>
+        {
+          balance === 0 && <Button style={styles.topUp} title="Topup" onPress={topUp} />
+        }
       </View>
       <View style={styles.info}>
         <Typography style={styles.description}>Series Number:</Typography>
@@ -100,7 +106,7 @@ const styles = StyleSheet.create({
   },
   headerCard: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   balanceView: {
     marginLeft: 8
@@ -112,5 +118,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 4
+  },
+  topUp: {
+    backgroundColor: "#fff"
   }
 });

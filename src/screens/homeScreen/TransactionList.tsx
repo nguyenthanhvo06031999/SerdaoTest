@@ -18,7 +18,7 @@ export const TransactionList = (props: Props) => {
       </View>
       {item.account && (
         <View>
-          <Typography numberOfLines={1} style={styles.itemText}><Typography style={styles.bold}>To:</Typography> {item.account.firstName}{item.account.lastName}</Typography>
+          <Typography numberOfLines={1} style={styles.itemText}><Typography style={styles.bold}>To:</Typography> {item.account.firstName} {item.account.lastName}</Typography>
           <Typography numberOfLines={1} style={styles.itemText}><Typography style={styles.bold}>IBAN:</Typography> {item.account.iban}</Typography>
         </View>
       )}

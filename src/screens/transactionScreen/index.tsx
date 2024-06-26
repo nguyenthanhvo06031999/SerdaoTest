@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, TextInput, SafeAreaView, StyleSheet, Modal } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { useTransactions } from "../../contexts/TransactionContext.tsx";
-import { useNavigation } from "@react-navigation/native";
 import { Header } from "../../components/Header.tsx";
 import { useForm, Controller } from 'react-hook-form';
 import Typography from "../../components/Typography.tsx";
@@ -29,6 +28,7 @@ interface Beneficiary {
 }
 
 const TransactionScreen = () => {
+  const { balance } = useTransactions();
   const { control, handleSubmit, setValue, formState: { errors }, setError, reset } = useForm({defaultValues: {
       firstName: "",
       lastName: "",
@@ -36,7 +36,6 @@ const TransactionScreen = () => {
       amount: "",
     }});
   const { addTransaction } = useTransactions();
-  const navigation = useNavigation();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [mode, setMode] = useState("manual");
   const [showPopup, setShowPopup] = useState(false);
@@ -48,12 +47,18 @@ const TransactionScreen = () => {
       setError('iban', { type: 'manual', message: 'Invalid IBAN' });
       return;
     }
+    const transactionAmount = parseInt(data.amount, 10);
+
+    if (transactionAmount > balance) {
+      setError('amount', { type: 'manual', message: 'Amount exceeds available balance' });
+      return;
+    }
     const accountDetails: AccountDetails = {
       firstName: data.firstName,
       lastName: data.lastName,
       iban: data.iban
     };
-    addTransaction(parseInt(data.amount, 10), accountDetails);
+    addTransaction(transactionAmount, accountDetails);
     setShowPopup(true);
   };
 

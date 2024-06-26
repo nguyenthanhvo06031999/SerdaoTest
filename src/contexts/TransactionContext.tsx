@@ -19,6 +19,7 @@ interface TransactionContextType {
   transactions: Transaction[];
   addTransaction: (amount: number, account: AccountDetails) => void;
   balance: number;
+  topUp: () => void;
 }
 
 const TransactionContext = createContext<TransactionContextType | undefined>(undefined);
@@ -84,8 +85,12 @@ export const TransactionProvider: React.FC<TransactionProviderProps> = ({ childr
     setBalance(prevBalance => prevBalance - amount);
   };
 
+  const topUp = () => {
+    setBalance(BALANCE);
+  }
+
   return (
-    <TransactionContext.Provider value={{ transactions, addTransaction, balance }}>
+    <TransactionContext.Provider value={{ transactions, addTransaction, balance, topUp }}>
       {children}
     </TransactionContext.Provider>
   );
